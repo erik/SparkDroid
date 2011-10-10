@@ -49,7 +49,7 @@ public class NotesCache implements Serializable {
 					Log.i("SD", "Retrying, downloading fresh list");
 
 					retry = true;
-					
+
 					doInBackground(unused);
 
 				}
@@ -122,7 +122,7 @@ public class NotesCache implements Serializable {
 
 				oout.writeObject(NotesCache.getInstance());
 				oout.close();
-				
+
 				Log.i("SD", "Finished writing cache");
 
 			} catch (Exception e) {
@@ -162,10 +162,6 @@ public class NotesCache implements Serializable {
 		mDowloadFailed = false;
 	}
 
-	public boolean getFailed() {
-		return mDowloadFailed;
-	}
-
 	public void addNote(Note n) {
 		mNotes.add(n);
 	}
@@ -176,6 +172,10 @@ public class NotesCache implements Serializable {
 
 	public int getCompletion() {
 		return mCompletion;
+	}
+
+	public boolean getFailed() {
+		return mDowloadFailed;
 	}
 
 	public Note getNote(int pos) {

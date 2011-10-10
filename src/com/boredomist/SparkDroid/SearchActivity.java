@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -27,7 +28,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -189,7 +189,7 @@ public class SearchActivity extends Activity implements OnItemClickListener,
 	}
 
 	private void selectNote(final int pos) {
-		ConnectivityManager manager = (ConnectivityManager) getSystemService(SearchActivity.CONNECTIVITY_SERVICE);
+		ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		Note n = NotesCache.getInstance().getNote(pos);
 		if (n.cachedState() < 0) {

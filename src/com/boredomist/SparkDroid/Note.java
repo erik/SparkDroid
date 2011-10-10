@@ -29,7 +29,7 @@ public class Note implements Serializable {
 		mUpdated = false;
 
 		mCompletion = 0;
-		
+
 		mIndex = new NoteIndex(this);
 
 		mSections = new ArrayList<NoteSection>();
@@ -56,7 +56,7 @@ public class Note implements Serializable {
 
 	public void fetchAll() {
 		if (!mUpdated) {
-			//mIndex = new NoteIndex(this);
+			// mIndex = new NoteIndex(this);
 			mUpdated = true;
 		}
 		mIndex.update();
@@ -72,7 +72,7 @@ public class Note implements Serializable {
 
 	public void fetchIndex() {
 		if (!mUpdated) {
-			//this.mIndex = new NoteIndex(this);
+			// this.mIndex = new NoteIndex(this);
 			mUpdated = true;
 		}
 		mIndex.update();
@@ -106,6 +106,10 @@ public class Note implements Serializable {
 		return mBook;
 	}
 
+	public int getCompletion() {
+		return mCompletion;
+	}
+
 	public String getContent() {
 		return mContent;
 	}
@@ -132,10 +136,6 @@ public class Note implements Serializable {
 		this.mUpdated = false;
 
 		NotesCache.getInstance().writeCache();
-	}
-
-	public int getCompletion() {
-		return mCompletion;
 	}
 
 }

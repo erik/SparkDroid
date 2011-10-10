@@ -57,13 +57,9 @@ public class NoteSection implements Serializable {
 		} catch (Exception e) {
 			Log.e("SD", "NoteSection: " + e);
 		}
-		
+
 		NotesCache.getInstance().writeCache();
 		mFetched = true;
-	}
-
-	public boolean isFetched() {
-		return mFetched;
 	}
 
 	public String getName() {
@@ -84,6 +80,10 @@ public class NoteSection implements Serializable {
 
 	public String getUrl() {
 		return mUrl;
+	}
+
+	public boolean isFetched() {
+		return mFetched;
 	}
 
 	public int numSections() {
