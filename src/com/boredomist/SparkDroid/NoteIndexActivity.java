@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -35,7 +34,7 @@ public class NoteIndexActivity extends Activity implements OnItemClickListener {
 		Bundle extras = caller.getExtras();
 		if (extras != null) {
 			int pos = extras.getInt("note");
-			mNote = SearchActivity.notesCache.getNote(pos);
+			mNote = NotesCache.getInstance().getNote(pos);
 
 			setTitle(mNote.getBook() + " - " + mNote.getAuthor());
 
@@ -45,7 +44,7 @@ public class NoteIndexActivity extends Activity implements OnItemClickListener {
 					getApplicationContext(), mNote.getSections()));
 
 			listView.setTextFilterEnabled(true);
-			
+
 			listView.setOnItemClickListener(this);
 		}
 	}

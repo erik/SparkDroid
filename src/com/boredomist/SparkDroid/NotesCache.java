@@ -7,7 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,7 +25,20 @@ public class NotesCache implements Serializable {
 	private int mCompletion;
 	transient private SearchActivity mSearchActivity;
 
-	public NotesCache() {
+	private static NotesCache _instance;
+
+	public static synchronized NotesCache getInstance() {
+		if (_instance == null) {
+			_instance = new NotesCache();
+		}
+		return _instance;
+	}
+
+	public static synchronized void setInstance(NotesCache cache) {
+		_instance = cache;
+	}
+
+	private NotesCache() {
 		mNotes = new ArrayList<Note>();
 		mUpdated = false;
 		mCompletion = 0;

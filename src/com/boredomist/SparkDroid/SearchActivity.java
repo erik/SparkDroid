@@ -25,7 +25,6 @@ import android.widget.ProgressBar;
 public class SearchActivity extends Activity implements AnimationListener,
 		OnItemClickListener, OnClickListener {
 
-	public static NotesCache notesCache;
 	private ProgressDialog mDialog;
 
 	public final Handler handler = new Handler();
@@ -52,19 +51,19 @@ public class SearchActivity extends Activity implements AnimationListener,
 		if (savedInstanceState != null) {
 			Log.i("SD", "RESTORING");
 			Object cache = savedInstanceState.getSerializable("NotesCache");
-			SearchActivity.notesCache = (NotesCache) cache;
+			NotesCache.setInstance((NotesCache) cache);
 		} else {
-			SearchActivity.notesCache = new NotesCache();
+			NotesCache.getInstance();
 		}
 
 		setContentView(R.layout.search);
 
-		SearchActivity.notesCache.update(this, false);
+		NotesCache.getInstance().update(this, false);
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle bundle) {
-		bundle.putSerializable("NotesCache", SearchActivity.notesCache);
+		bundle.putSerializable("NotesCache", NotesCache.getInstance());
 	}
 
 	public void onAnimationEnd(Animation animation) {
@@ -80,11 +79,11 @@ public class SearchActivity extends Activity implements AnimationListener,
 		mDialog.setMessage("Loading...");
 
 		ProgressBar downloadProgress = (ProgressBar) findViewById(R.id.listprogressbar);
-		downloadProgress.setProgress(notesCache.getCompletion());
+		downloadProgress.setProgress(NotesCache.getInstance().getCompletion());
 
-		if (notesCache.getCompletion() == 100) {
+		if (NotesCache.getInstance().getCompletion() == 100) {
 
-			notesCache.setCompletion(101);
+			NotesCache.getInstance().setCompletion(101);
 
 			Animation animation;
 
@@ -98,7 +97,7 @@ public class SearchActivity extends Activity implements AnimationListener,
 
 		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.searchbox);
 
-		ArrayList<Note> notes = notesCache.getNotes();
+		ArrayList<Note> notes = NotesCache.getInstance().getNotes();
 		ArrayList<String> noteNames = new ArrayList<String>();
 		for (Note n : notes) {
 			noteNames.add(n.getBook());
@@ -112,7 +111,7 @@ public class SearchActivity extends Activity implements AnimationListener,
 		ListView listView = (ListView) findViewById(R.id.notes_list);
 
 		listView.setAdapter(new NotesAdapter(getApplicationContext(),
-				notesCache.getNotes()));
+				NotesCache.getInstance().getNotes()));
 
 		listView.setTextFilterEnabled(true);
 		listView.setOnItemClickListener(this);
@@ -128,9 +127,9 @@ public class SearchActivity extends Activity implements AnimationListener,
 		new Thread() {
 			public void run() {
 
-				Note note = notesCache.getNote(pos);
+				Note note = NotesCache.getInstance().getNote(pos);
 				note.fetchIndex();
-				notesCache.setNote(pos, note);
+				NotesCache.getInstance().setNote(pos, note);
 
 				mDialog.dismiss();
 
@@ -148,7 +147,7 @@ public class SearchActivity extends Activity implements AnimationListener,
 
 		if (view.getId() == R.id.searchbutton) {
 			int i = 0;
-			for (Note n : notesCache.getNotes()) {
+			for (Note n : NotesCache.getInstance().getNotes()) {
 				if (n.getBook().equals(textView.getText().toString())) {
 					selectNote(i);
 				}
