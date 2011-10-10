@@ -102,6 +102,7 @@ public class SearchActivity extends Activity implements AnimationListener,
 		mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
 		new Thread() {
+			@Override
 			public void run() {
 
 				Note note = NotesCache.getInstance().getNote(pos);

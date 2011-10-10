@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 public class NoteIndexActivity extends Activity implements OnItemClickListener {
@@ -30,8 +29,8 @@ public class NoteIndexActivity extends Activity implements OnItemClickListener {
 
 			ListView listView = (ListView) findViewById(R.id.note_index_list);
 
-			listView.setAdapter((ListAdapter) new NoteIndexAdapter(
-					getApplicationContext(), mNote.getSections()));
+			listView.setAdapter(new NoteIndexAdapter(getApplicationContext(),
+					mNote.getSections()));
 
 			listView.setTextFilterEnabled(true);
 
@@ -45,6 +44,7 @@ public class NoteIndexActivity extends Activity implements OnItemClickListener {
 		dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
 		new Thread() {
+			@Override
 			public void run() {
 
 				NoteSection noteSection = mNote.getSections().get(pos);

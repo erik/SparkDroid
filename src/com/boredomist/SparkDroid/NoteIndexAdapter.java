@@ -19,21 +19,17 @@ public class NoteIndexAdapter extends BaseAdapter {
 		this.mSections = sections;
 	}
 
-	
 	public int getCount() {
 		return mSections.size();
 	}
-
 
 	public NoteSection getItem(int position) {
 		return mSections.get(position);
 	}
 
-
 	public long getItemId(int position) {
 		return position;
 	}
-
 
 	public View getView(int position, View convertView, ViewGroup viewGroup) {
 		NoteSection sect = mSections.get(position);
@@ -51,6 +47,5 @@ public class NoteIndexAdapter extends BaseAdapter {
 
 		return convertView;
 	}
-
 
 }

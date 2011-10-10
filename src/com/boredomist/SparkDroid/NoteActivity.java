@@ -10,6 +10,7 @@ public class NoteActivity extends Activity {
 
 	private NoteSection mSection;
 
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -25,7 +26,7 @@ public class NoteActivity extends Activity {
 		setContentView(R.layout.note_section);
 
 		setTitle(mSection.getName());
-		
+
 		TextView view = (TextView) findViewById(R.id.section_content);
 		view.setText(Html.fromHtml(mSection.getText()));
 	}

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class NotesAdapter extends BaseAdapter  {
+public class NotesAdapter extends BaseAdapter {
 	private Context context;
 
 	private ArrayList<Note> mNotes;
@@ -42,11 +42,12 @@ public class NotesAdapter extends BaseAdapter  {
 
 			convertView = inflater.inflate(R.layout.list_item, null);
 		}
-		TextView  textViewBook = (TextView) convertView
+		TextView textViewBook = (TextView) convertView
 				.findViewById(R.id.book_name);
 		textViewBook.setText(noteName);
 
-		TextView textViewAuthor = (TextView) convertView.findViewById(R.id.book_author);
+		TextView textViewAuthor = (TextView) convertView
+				.findViewById(R.id.book_author);
 		textViewAuthor.setText(author);
 
 		return convertView;

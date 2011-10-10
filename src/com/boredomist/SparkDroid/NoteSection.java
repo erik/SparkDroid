@@ -47,7 +47,7 @@ public class NoteSection implements Serializable {
 			for (Node ad : ads) {
 				ad.remove();
 			}
-			
+
 			Element e = doc.getElementsByClass("studyGuideText").first();
 
 			mText = e.html();

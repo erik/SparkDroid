@@ -9,8 +9,8 @@ public class SparkDroidActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		
-		Intent intent = new Intent(Intent.ACTION_VIEW, null, getApplicationContext(), SearchActivity.class);
+		Intent intent = new Intent(Intent.ACTION_VIEW, null,
+				getApplicationContext(), SearchActivity.class);
 		startActivity(intent);
 
 	}

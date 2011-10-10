@@ -19,6 +19,7 @@ import android.util.Log;
 public class NotesCache implements Serializable {
 
 	private class PopulateCache extends AsyncTask<NotesCache, Void, Void> {
+		@Override
 		public Void doInBackground(NotesCache... caches) {
 
 			NotesCache cache = caches[0];
