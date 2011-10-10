@@ -1,6 +1,5 @@
 package com.boredomist.SparkDroid;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -10,8 +9,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 
 public class NoteSection implements Serializable {

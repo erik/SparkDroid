@@ -2,8 +2,6 @@ package com.boredomist.SparkDroid;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import org.jsoup.Jsoup;
 
 public class Note implements Serializable {
 
