@@ -34,10 +34,12 @@ public class NoteIndex implements Serializable {
 			Log.i("SD", "Index already up to date, skipping");
 			return;
 		}
+		
 		try {
 			Document doc = Jsoup.connect(mNote.getUrl()).timeout(7000)
 					.userAgent("Mozilla/5.0").get();
 
+			
 			Elements entries = doc.getElementsByClass("entry");
 			Iterator<Element> iter = entries.iterator();
 
@@ -52,11 +54,20 @@ public class NoteIndex implements Serializable {
 
 				Log.i("SD", name + " " + url);
 
-				mSections.add(new NoteSection(mNote, name, url));
+				if (url != null && !url.isEmpty()) {
+					mSections.add(new NoteSection(mNote, name, url));
+				}
 			}
+
+			NotesCache.getInstance().writeCache();
 			mUpdated = true;
+
 		} catch (Exception e) {
-			Log.e("SD", "ERROR " + e);
+			Log.e("SD", "NoteIndex: " + e);
 		}
+	}
+
+	public boolean getFetched() {
+		return mUpdated;
 	}
 }

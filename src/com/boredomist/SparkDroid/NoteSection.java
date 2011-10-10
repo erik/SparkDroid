@@ -39,6 +39,8 @@ public class NoteSection implements Serializable {
 			return;
 		}
 
+		Log.i("SD", "Fetching " + mName);
+
 		try {
 			Document doc = Jsoup.connect(mUrl).userAgent("Mozilla/5.0")
 					.timeout(7000).get();
@@ -51,11 +53,17 @@ public class NoteSection implements Serializable {
 			Element e = doc.getElementsByClass("studyGuideText").first();
 
 			mText = e.html();
-			mFetched = true;
 
 		} catch (Exception e) {
-			Log.e("SD", "ERROR " + e);
+			Log.e("SD", "NoteSection: " + e);
 		}
+		
+		NotesCache.getInstance().writeCache();
+		mFetched = true;
+	}
+
+	public boolean isFetched() {
+		return mFetched;
 	}
 
 	public String getName() {

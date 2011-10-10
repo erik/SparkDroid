@@ -18,7 +18,9 @@ import android.util.Log;
 
 public class NotesCache implements Serializable {
 
-	private class PopulateCache extends AsyncTask<Void, Void, Void> {
+	private class PopulateCacheTask extends AsyncTask<Void, Void, Void> {
+		boolean retry = false;
+
 		@Override
 		public Void doInBackground(Void... unused) {
 
@@ -27,7 +29,7 @@ public class NotesCache implements Serializable {
 			File cacheDir = SearchActivity.cacheDir;
 			File notesListFile = new File(cacheDir, "notes_cache");
 
-			if (notesListFile.exists()) {
+			if (notesListFile.exists() && !retry) {
 
 				Log.i("SD", "Cache file exists, reading...");
 
@@ -43,6 +45,12 @@ public class NotesCache implements Serializable {
 					}
 
 				} catch (Exception e) {
+					Log.e("SD", "NotesCache: " + e);
+					Log.i("SD", "Retrying, downloading fresh list");
+
+					retry = true;
+					
+					doInBackground(unused);
 
 				}
 
@@ -53,13 +61,8 @@ public class NotesCache implements Serializable {
 				Log.i("SD", "Loaded from file.");
 
 			} else {
-				ObjectOutputStream oout = null;
 
 				try {
-					notesListFile.createNewFile();
-					oout = new ObjectOutputStream(new FileOutputStream(
-							notesListFile));
-
 					Document doc = null;
 
 					for (int i = 0; i < 26; ++i) {
@@ -78,10 +81,6 @@ public class NotesCache implements Serializable {
 							Element book = entry.select("a").first();
 							Element author = entry.select("span").first();
 
-							Log.i("SD",
-									book.ownText() + " - " + author.ownText()
-											+ " " + book.attr("abs:href"));
-
 							NotesCache.getInstance().addNote(book.ownText(),
 									author.ownText(), book.attr("abs:href"));
 
@@ -92,16 +91,46 @@ public class NotesCache implements Serializable {
 						act.handler.post(act.updateResults);
 					}
 
-					Log.i("SD", "Serializing cache");
-					oout.writeObject(NotesCache.getInstance());
-					oout.close();
-					Log.i("SD", "Finished writing");
+					new WriteCacheTask().execute();
+
 				} catch (Exception e) {
-					Log.e("SD", "Error" + e);
+					Log.e("SD", "Error " + e);
+					NotesCache.getInstance().mDowloadFailed = true;
+					act.handler.post(act.updateResults);
 				}
 			}
 			return null;
 		}
+	}
+
+	private class WriteCacheTask extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... params) {
+
+			File cacheDir = SearchActivity.cacheDir;
+			File notesListFile = new File(cacheDir, "notes_cache");
+			try {
+				if (!notesListFile.exists()) {
+					notesListFile.createNewFile();
+				}
+
+				ObjectOutputStream oout = new ObjectOutputStream(
+						new FileOutputStream(notesListFile));
+
+				Log.i("SD", "Serializing cache");
+
+				oout.writeObject(NotesCache.getInstance());
+				oout.close();
+				
+				Log.i("SD", "Finished writing cache");
+
+			} catch (Exception e) {
+				Log.e("SD", "ERROR " + e + e.getMessage());
+			}
+			return null;
+		}
+
 	}
 
 	private static final long serialVersionUID = 303313901179783177L;
@@ -109,6 +138,7 @@ public class NotesCache implements Serializable {
 	private ArrayList<Note> mNotes;
 	private boolean mUpdated;
 	private int mCompletion;
+	private boolean mDowloadFailed;
 
 	transient private SearchActivity mSearchActivity;
 
@@ -129,6 +159,11 @@ public class NotesCache implements Serializable {
 		mNotes = new ArrayList<Note>();
 		mUpdated = false;
 		mCompletion = 0;
+		mDowloadFailed = false;
+	}
+
+	public boolean getFailed() {
+		return mDowloadFailed;
 	}
 
 	public void addNote(Note n) {
@@ -174,8 +209,12 @@ public class NotesCache implements Serializable {
 
 			mSearchActivity = act;
 
-			new PopulateCache().execute();
-
+			new PopulateCacheTask().execute();
 		}
 	}
+
+	public void writeCache() {
+		new WriteCacheTask().execute();
+	}
+
 }

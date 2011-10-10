@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class NotesAdapter extends BaseAdapter {
@@ -49,6 +50,19 @@ public class NotesAdapter extends BaseAdapter {
 		TextView textViewAuthor = (TextView) convertView
 				.findViewById(R.id.book_author);
 		textViewAuthor.setText(author);
+
+		ImageView imageView = (ImageView) convertView
+				.findViewById(R.id.image_is_cached);
+
+		int cached = note.cachedState();
+
+		if (cached == 0) {
+			imageView.setImageResource(R.drawable.rate_star_small_off);
+		} else if (cached == 1) {
+			imageView.setImageResource(R.drawable.rate_star_small_on);
+		} else {
+			imageView.setImageDrawable(null);
+		}
 
 		return convertView;
 	}
