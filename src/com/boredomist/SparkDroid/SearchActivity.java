@@ -1,5 +1,6 @@
 package com.boredomist.SparkDroid;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -10,20 +11,17 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
-public class SearchActivity extends Activity implements AnimationListener,
-		OnItemClickListener, OnClickListener {
+public class SearchActivity extends Activity implements OnItemClickListener,
+		OnClickListener {
+
+	public static File cacheDir;
 
 	private ProgressDialog mDialog;
 
@@ -33,28 +31,6 @@ public class SearchActivity extends Activity implements AnimationListener,
 			updateData();
 		}
 	};
-	public final Runnable showProgressDialog = new Runnable() {
-		public void run() {
-			mDialog.show();
-		}
-	};
-	public final Runnable hideProgressDialog = new Runnable() {
-		public void run() {
-			mDialog.dismiss();
-		}
-	};
-
-	public void onAnimationEnd(Animation animation) {
-		ProgressBar downloadProgress = (ProgressBar) findViewById(R.id.listprogressbar);
-		downloadProgress.setVisibility(View.GONE);
-
-	}
-
-	public void onAnimationRepeat(Animation animation) {
-	}
-
-	public void onAnimationStart(Animation animation) {
-	}
 
 	public void onClick(View view) {
 		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.searchbox);
@@ -74,16 +50,17 @@ public class SearchActivity extends Activity implements AnimationListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (savedInstanceState != null) {
-			Log.i("SD", "RESTORING");
-			Object cache = savedInstanceState.getSerializable("NotesCache");
-			NotesCache.setInstance((NotesCache) cache);
-		} else {
-			NotesCache.getInstance();
-		}
+		SearchActivity.cacheDir = getCacheDir();
 
 		setContentView(R.layout.search);
 
+		mDialog = new ProgressDialog(SearchActivity.this);
+		mDialog.setMessage("Loading list");
+		mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		mDialog.setCancelable(false);
+		mDialog.show();
+
+		NotesCache.setInstance(null);
 		NotesCache.getInstance().update(this, false);
 	}
 
@@ -107,7 +84,6 @@ public class SearchActivity extends Activity implements AnimationListener,
 
 				Note note = NotesCache.getInstance().getNote(pos);
 				note.fetchIndex();
-				NotesCache.getInstance().setNote(pos, note);
 
 				mDialog.dismiss();
 
@@ -121,26 +97,11 @@ public class SearchActivity extends Activity implements AnimationListener,
 	}
 
 	private void updateData() {
-		mDialog = new ProgressDialog(getApplicationContext());
-		mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		mDialog.setIndeterminate(true);
-		mDialog.setMessage("Loading...");
 
-		ProgressBar downloadProgress = (ProgressBar) findViewById(R.id.listprogressbar);
-		downloadProgress.setProgress(NotesCache.getInstance().getCompletion());
+		mDialog.setProgress(NotesCache.getInstance().getCompletion());
 
 		if (NotesCache.getInstance().getCompletion() == 100) {
-
-			NotesCache.getInstance().setCompletion(101);
-
-			Animation animation;
-
-			animation = new AlphaAnimation(1.0f, 0.0f);
-			animation.setInterpolator(new DecelerateInterpolator());
-			animation.setDuration(500L);
-			animation.setAnimationListener(this);
-
-			downloadProgress.startAnimation(animation);
+			mDialog.dismiss();
 		}
 
 		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.searchbox);

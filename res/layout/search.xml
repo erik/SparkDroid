@@ -4,9 +4,6 @@
 	android:orientation="vertical" android:layout_width="match_parent"
 	android:layout_height="match_parent" android:weightSum="1">
 
-	<ProgressBar android:layout_width="fill_parent" android:id="@+id/listprogressbar"
-		android:layout_height="wrap_content" style="@android:style/Widget.ProgressBar.Horizontal" />
-
 	<LinearLayout android:id="@+id/linearLayout1"
 		android:layout_width="match_parent" android:layout_height="wrap_content">
 
@@ -16,8 +13,8 @@
 			<requestFocus></requestFocus>
 		</AutoCompleteTextView>
 		<Button android:id="@+id/searchbutton" android:layout_width="wrap_content"
-			android:minWidth="50dp"
-			android:layout_height="wrap_content" android:text="@string/SearchString"></Button>
+			android:minWidth="50dp" android:layout_height="wrap_content"
+			android:text="@string/SearchString"></Button>
 	</LinearLayout>
 	<LinearLayout android:layout_width="match_parent"
 		android:id="@+id/linearLayout2" android:orientation="vertical"

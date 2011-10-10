@@ -18,37 +18,35 @@ import android.util.Log;
 
 public class NotesCache implements Serializable {
 
-	private class PopulateCache extends AsyncTask<NotesCache, Void, Void> {
+	private class PopulateCache extends AsyncTask<Void, Void, Void> {
 		@Override
-		public Void doInBackground(NotesCache... caches) {
+		public Void doInBackground(Void... unused) {
 
-			NotesCache cache = caches[0];
+			SearchActivity act = NotesCache.getInstance().mSearchActivity;
 
-			SearchActivity act = cache.mSearchActivity;
-
-			File cacheDir = cache.mSearchActivity.getCacheDir();
+			File cacheDir = SearchActivity.cacheDir;
 			File notesListFile = new File(cacheDir, "notes_cache");
 
 			if (notesListFile.exists()) {
 
 				Log.i("SD", "Cache file exists, reading...");
 
-				FileInputStream fin = null;
 				try {
-					fin = new FileInputStream(notesListFile);
+					FileInputStream fin = new FileInputStream(notesListFile);
 
 					ObjectInputStream oin = new ObjectInputStream(fin);
 					NotesCache serial = (NotesCache) oin.readObject();
+					oin.close();
 
 					for (Note n : serial.mNotes) {
-						cache.addNote(n);
+						NotesCache.getInstance().addNote(n);
 					}
 
 				} catch (Exception e) {
 
 				}
 
-				cache.mCompletion = 100;
+				NotesCache.getInstance().mCompletion = 100;
 
 				act.handler.post(act.updateResults);
 
@@ -84,18 +82,18 @@ public class NotesCache implements Serializable {
 									book.ownText() + " - " + author.ownText()
 											+ " " + book.attr("abs:href"));
 
-							cache.addNote(book.ownText(), author.ownText(),
-									book.attr("abs:href"));
+							NotesCache.getInstance().addNote(book.ownText(),
+									author.ownText(), book.attr("abs:href"));
 
 						}
 
-						cache.mCompletion = (int) (((i + 1) / 26.0) * 100);
+						NotesCache.getInstance().mCompletion = (int) (((i + 1) / 26.0) * 100);
 
 						act.handler.post(act.updateResults);
 					}
 
 					Log.i("SD", "Serializing cache");
-					oout.writeObject(cache);
+					oout.writeObject(NotesCache.getInstance());
 					oout.close();
 					Log.i("SD", "Finished writing");
 				} catch (Exception e) {
@@ -107,6 +105,7 @@ public class NotesCache implements Serializable {
 	}
 
 	private static final long serialVersionUID = 303313901179783177L;
+
 	private ArrayList<Note> mNotes;
 	private boolean mUpdated;
 	private int mCompletion;
@@ -130,7 +129,6 @@ public class NotesCache implements Serializable {
 		mNotes = new ArrayList<Note>();
 		mUpdated = false;
 		mCompletion = 0;
-		mSearchActivity = null;
 	}
 
 	public void addNote(Note n) {
@@ -175,7 +173,8 @@ public class NotesCache implements Serializable {
 			mCompletion = 0;
 
 			mSearchActivity = act;
-			new PopulateCache().execute(this);
+
+			new PopulateCache().execute();
 
 		}
 	}
