@@ -17,12 +17,12 @@ public class NoteIndex implements Serializable {
 
 	private Note mNote;
 	private ArrayList<NoteSection> mSections;
-	private boolean updated;
+	private boolean mUpdated;
 
 	public NoteIndex(Note n) {
 		mNote = n;
 		mSections = new ArrayList<NoteSection>();
-		updated = false;
+		mUpdated = false;
 	}
 
 	public ArrayList<NoteSection> getSections() {
@@ -30,6 +30,10 @@ public class NoteIndex implements Serializable {
 	}
 
 	public void update() {
+		if (mUpdated) {
+			Log.i("SD", "Index already up to date, skipping");
+			return;
+		}
 		try {
 			Document doc = Jsoup.connect(mNote.getUrl()).timeout(7000)
 					.userAgent("Mozilla/5.0").get();
@@ -48,27 +52,9 @@ public class NoteIndex implements Serializable {
 
 				Log.i("SD", name + " " + url);
 
-				String tmpName = section.attr("abs:name");
-
-				/*
-				 * // category if (tmpName != null && tmpName.equals("none")) {
-				 * NoteSection category = new NoteSection(mNote, name, null);
-				 * boolean indented = false; do { entry = iter.next();
-				 * 
-				 * section = entry.select("a").first(); name =
-				 * section.ownText(); url = section.attr("abs:href");
-				 * 
-				 * category.addSubSection(new NoteSection(mNote, name, url));
-				 * 
-				 * Log.i("SD", "SUB - " + name + " " + url);
-				 * 
-				 * indented = entry.select("p").first().className()
-				 * .equals("indented"); } while (indented && iter.hasNext()); }
-				 */
 				mSections.add(new NoteSection(mNote, name, url));
-
 			}
-
+			mUpdated = true;
 		} catch (Exception e) {
 			Log.e("SD", "ERROR " + e);
 		}

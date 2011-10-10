@@ -1,5 +1,7 @@
 package com.boredomist.SparkDroid;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -23,7 +25,7 @@ import android.widget.ProgressBar;
 public class SearchActivity extends Activity implements AnimationListener,
 		OnItemClickListener, OnClickListener {
 
-	private static NotesCache notesCache;
+	public static NotesCache notesCache;
 	private ProgressDialog mDialog;
 
 	public final Handler handler = new Handler();
@@ -96,8 +98,14 @@ public class SearchActivity extends Activity implements AnimationListener,
 
 		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.searchbox);
 
+		ArrayList<Note> notes = notesCache.getNotes();
+		ArrayList<String> noteNames = new ArrayList<String>();
+		for (Note n : notes) {
+			noteNames.add(n.getBook());
+		}
+
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				R.layout.autocomplete_list_item, notesCache.getNoteArray());
+				R.layout.autocomplete_list_item, noteNames);
 
 		textView.setAdapter(adapter);
 
@@ -120,14 +128,15 @@ public class SearchActivity extends Activity implements AnimationListener,
 		new Thread() {
 			public void run() {
 
-				Note note = notesCache.getNotes().get(pos);
+				Note note = notesCache.getNote(pos);
 				note.fetchIndex();
+				notesCache.setNote(pos, note);
 
 				mDialog.dismiss();
 
 				Intent intent = new Intent(getApplicationContext(),
 						NoteIndexActivity.class);
-				intent.putExtra("note", note);
+				intent.putExtra("note", pos);
 
 				startActivity(intent);
 			}

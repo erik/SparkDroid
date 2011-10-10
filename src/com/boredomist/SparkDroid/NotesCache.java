@@ -37,6 +37,14 @@ public class NotesCache implements Serializable {
 		mCompletion = i;
 	}
 
+	public Note getNote(int pos) {
+		return mNotes.get(pos);
+	}
+
+	public void setNote(int pos, Note note) {
+		mNotes.set(pos, note);
+	}
+
 	public void addNote(Note n) {
 		mNotes.add(n);
 	}
@@ -72,16 +80,6 @@ public class NotesCache implements Serializable {
 		return mUpdated;
 	}
 
-	public List<String> getNoteArray() {
-		ArrayList<String> notes = new ArrayList<String>();
-
-		for (Note n : mNotes) {
-			notes.add(n.getBook());
-		}
-
-		return notes;
-	}
-
 	private class PopulateCache extends AsyncTask<NotesCache, Void, Void> {
 		public Void doInBackground(NotesCache... caches) {
 
@@ -110,10 +108,6 @@ public class NotesCache implements Serializable {
 				} catch (Exception e) {
 
 				}
-				/*
-				 * Scanner scan = new Scanner(fin); while (scan.hasNextLine()) {
-				 * cache.addNote(scan.nextLine(), scan.nextLine(), "TODO"); }
-				 */
 
 				cache.mCompletion = 100;
 
@@ -168,10 +162,8 @@ public class NotesCache implements Serializable {
 				} catch (Exception e) {
 					Log.e("SD", "Error" + e);
 				}
-				return null;
 			}
 			return null;
 		}
 	}
-
 }

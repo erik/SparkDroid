@@ -34,17 +34,15 @@ public class NoteIndexActivity extends Activity implements OnItemClickListener {
 
 		Bundle extras = caller.getExtras();
 		if (extras != null) {
-			Note note = (Note) extras.get("note");
-			mNote = note;
+			int pos = extras.getInt("note");
+			mNote = SearchActivity.notesCache.getNote(pos);
 
-			setTitle(note.getBook() + " - " + note.getAuthor());
+			setTitle(mNote.getBook() + " - " + mNote.getAuthor());
 
 			ListView listView = (ListView) findViewById(R.id.note_index_list);
 
-			Log.i("SD", note.getSections().toString());
-
 			listView.setAdapter((ListAdapter) new NoteIndexAdapter(
-					getApplicationContext(), note.getSections()));
+					getApplicationContext(), mNote.getSections()));
 
 			listView.setTextFilterEnabled(true);
 			

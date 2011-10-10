@@ -11,7 +11,7 @@ public class Note implements Serializable {
 	private String mBook;
 	private String mUrl;
 	private String mContent;
-	private boolean mCached;
+	private boolean mUpdated;
 
 	private ArrayList<NoteSection> mSections;
 
@@ -22,9 +22,10 @@ public class Note implements Serializable {
 		mBook = book;
 
 		mUrl = url;
-		mCached = false;
+		mUpdated = false;
 
 		mSections = new ArrayList<NoteSection>();
+
 	}
 
 	public String getAuthor() {
@@ -52,7 +53,10 @@ public class Note implements Serializable {
 	}
 
 	public void fetchIndex() {
-		this.mIndex = new NoteIndex(this);
+		if (!mUpdated) {
+			this.mIndex = new NoteIndex(this);
+			mUpdated = true;
+		}
 		this.mIndex.update();
 	}
 
@@ -60,9 +64,9 @@ public class Note implements Serializable {
 		if (this.mIndex == null) {
 			fetchIndex();
 		}
-		
-		for(NoteSection s : mSections) {
-			if(s.getName().equals(sect)) {
+
+		for (NoteSection s : mSections) {
+			if (s.getName().equals(sect)) {
 				s.fetch();
 			}
 		}
