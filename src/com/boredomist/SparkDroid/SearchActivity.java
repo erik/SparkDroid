@@ -44,6 +44,32 @@ public class SearchActivity extends Activity implements AnimationListener,
 		}
 	};
 
+	public void onAnimationEnd(Animation animation) {
+		ProgressBar downloadProgress = (ProgressBar) findViewById(R.id.listprogressbar);
+		downloadProgress.setVisibility(View.GONE);
+
+	}
+
+	public void onAnimationRepeat(Animation animation) {
+	}
+
+	public void onAnimationStart(Animation animation) {
+	}
+
+	public void onClick(View view) {
+		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.searchbox);
+
+		if (view.getId() == R.id.searchbutton) {
+			int i = 0;
+			for (Note n : NotesCache.getInstance().getNotes()) {
+				if (n.getBook().equals(textView.getText().toString())) {
+					selectNote(i);
+				}
+				i++;
+			}
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,15 +87,36 @@ public class SearchActivity extends Activity implements AnimationListener,
 		NotesCache.getInstance().update(this, false);
 	}
 
+	public void onItemClick(AdapterView<?> parent, View view,
+			final int position, long id) {
+		selectNote(position);
+	}
+
 	@Override
 	protected void onSaveInstanceState(Bundle bundle) {
 		bundle.putSerializable("NotesCache", NotesCache.getInstance());
 	}
 
-	public void onAnimationEnd(Animation animation) {
-		ProgressBar downloadProgress = (ProgressBar) findViewById(R.id.listprogressbar);
-		downloadProgress.setVisibility(View.GONE);
+	private void selectNote(final int pos) {
+		mDialog = ProgressDialog.show(SearchActivity.this, "", "Loading", true);
+		mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
+		new Thread() {
+			public void run() {
+
+				Note note = NotesCache.getInstance().getNote(pos);
+				note.fetchIndex();
+				NotesCache.getInstance().setNote(pos, note);
+
+				mDialog.dismiss();
+
+				Intent intent = new Intent(getApplicationContext(),
+						NoteIndexActivity.class);
+				intent.putExtra("note", pos);
+
+				startActivity(intent);
+			}
+		}.start();
 	}
 
 	private void updateData() {
@@ -118,52 +165,5 @@ public class SearchActivity extends Activity implements AnimationListener,
 
 		Button button = (Button) findViewById(R.id.searchbutton);
 		button.setOnClickListener(this);
-	}
-
-	private void selectNote(final int pos) {
-		mDialog = ProgressDialog.show(SearchActivity.this, "", "Loading", true);
-		mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
-		new Thread() {
-			public void run() {
-
-				Note note = NotesCache.getInstance().getNote(pos);
-				note.fetchIndex();
-				NotesCache.getInstance().setNote(pos, note);
-
-				mDialog.dismiss();
-
-				Intent intent = new Intent(getApplicationContext(),
-						NoteIndexActivity.class);
-				intent.putExtra("note", pos);
-
-				startActivity(intent);
-			}
-		}.start();
-	}
-
-	public void onClick(View view) {
-		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.searchbox);
-
-		if (view.getId() == R.id.searchbutton) {
-			int i = 0;
-			for (Note n : NotesCache.getInstance().getNotes()) {
-				if (n.getBook().equals(textView.getText().toString())) {
-					selectNote(i);
-				}
-				i++;
-			}
-		}
-	}
-
-	public void onItemClick(AdapterView<?> parent, View view,
-			final int position, long id) {
-		selectNote(position);
-	}
-
-	public void onAnimationRepeat(Animation animation) {
-	}
-
-	public void onAnimationStart(Animation animation) {
 	}
 }

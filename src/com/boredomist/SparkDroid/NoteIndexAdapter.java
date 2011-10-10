@@ -20,6 +20,21 @@ public class NoteIndexAdapter extends BaseAdapter {
 	}
 
 	
+	public int getCount() {
+		return mSections.size();
+	}
+
+
+	public NoteSection getItem(int position) {
+		return mSections.get(position);
+	}
+
+
+	public long getItemId(int position) {
+		return position;
+	}
+
+
 	public View getView(int position, View convertView, ViewGroup viewGroup) {
 		NoteSection sect = mSections.get(position);
 		String sectName = sect.getName();
@@ -35,21 +50,6 @@ public class NoteIndexAdapter extends BaseAdapter {
 		textViewSect.setText(sectName);
 
 		return convertView;
-	}
-
-
-	public int getCount() {
-		return mSections.size();
-	}
-
-
-	public NoteSection getItem(int position) {
-		return mSections.get(position);
-	}
-
-
-	public long getItemId(int position) {
-		return position;
 	}
 
 

@@ -18,80 +18,6 @@ import android.util.Log;
 
 public class NotesCache implements Serializable {
 
-	private static final long serialVersionUID = 303313901179783177L;
-
-	private ArrayList<Note> mNotes;
-	private boolean mUpdated;
-	private int mCompletion;
-	transient private SearchActivity mSearchActivity;
-
-	private static NotesCache _instance;
-
-	public static synchronized NotesCache getInstance() {
-		if (_instance == null) {
-			_instance = new NotesCache();
-		}
-		return _instance;
-	}
-
-	public static synchronized void setInstance(NotesCache cache) {
-		_instance = cache;
-	}
-
-	private NotesCache() {
-		mNotes = new ArrayList<Note>();
-		mUpdated = false;
-		mCompletion = 0;
-		mSearchActivity = null;
-	}
-
-	public void setCompletion(int i) {
-		mCompletion = i;
-	}
-
-	public Note getNote(int pos) {
-		return mNotes.get(pos);
-	}
-
-	public void setNote(int pos, Note note) {
-		mNotes.set(pos, note);
-	}
-
-	public void addNote(Note n) {
-		mNotes.add(n);
-	}
-
-	public void addNote(String book, String auth, String url) {
-		mNotes.add(new Note(book, auth, url));
-	}
-
-	public ArrayList<Note> getNotes() {
-		return mNotes;
-	}
-
-	public void update(SearchActivity act, boolean force) {
-		if (mUpdated && !force) {
-			mUpdated = true;
-			mCompletion = 100;
-			return;
-		} else {
-			mUpdated = false;
-			mCompletion = 0;
-
-			mSearchActivity = act;
-			new PopulateCache().execute(this);
-
-		}
-	}
-
-	public int getCompletion() {
-		return mCompletion;
-	}
-
-	public boolean isUpToDate() {
-		return mUpdated;
-	}
-
 	private class PopulateCache extends AsyncTask<NotesCache, Void, Void> {
 		public Void doInBackground(NotesCache... caches) {
 
@@ -176,6 +102,80 @@ public class NotesCache implements Serializable {
 				}
 			}
 			return null;
+		}
+	}
+
+	private static final long serialVersionUID = 303313901179783177L;
+	private ArrayList<Note> mNotes;
+	private boolean mUpdated;
+	private int mCompletion;
+
+	transient private SearchActivity mSearchActivity;
+
+	private static NotesCache _instance;
+
+	public static synchronized NotesCache getInstance() {
+		if (_instance == null) {
+			_instance = new NotesCache();
+		}
+		return _instance;
+	}
+
+	public static synchronized void setInstance(NotesCache cache) {
+		_instance = cache;
+	}
+
+	private NotesCache() {
+		mNotes = new ArrayList<Note>();
+		mUpdated = false;
+		mCompletion = 0;
+		mSearchActivity = null;
+	}
+
+	public void addNote(Note n) {
+		mNotes.add(n);
+	}
+
+	public void addNote(String book, String auth, String url) {
+		mNotes.add(new Note(book, auth, url));
+	}
+
+	public int getCompletion() {
+		return mCompletion;
+	}
+
+	public Note getNote(int pos) {
+		return mNotes.get(pos);
+	}
+
+	public ArrayList<Note> getNotes() {
+		return mNotes;
+	}
+
+	public boolean isUpToDate() {
+		return mUpdated;
+	}
+
+	public void setCompletion(int i) {
+		mCompletion = i;
+	}
+
+	public void setNote(int pos, Note note) {
+		mNotes.set(pos, note);
+	}
+
+	public void update(SearchActivity act, boolean force) {
+		if (mUpdated && !force) {
+			mUpdated = true;
+			mCompletion = 100;
+			return;
+		} else {
+			mUpdated = false;
+			mCompletion = 0;
+
+			mSearchActivity = act;
+			new PopulateCache().execute(this);
+
 		}
 	}
 }

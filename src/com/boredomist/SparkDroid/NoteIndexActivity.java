@@ -14,16 +14,6 @@ public class NoteIndexActivity extends Activity implements OnItemClickListener {
 	private Note mNote;
 
 	@Override
-	public boolean onSearchRequested() {
-
-		Intent intent = new Intent(getApplicationContext(),
-				SearchActivity.class);
-		startActivity(intent);
-
-		return false;
-	}
-
-	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -70,5 +60,15 @@ public class NoteIndexActivity extends Activity implements OnItemClickListener {
 				startActivity(intent);
 			}
 		}.start();
+	}
+
+	@Override
+	public boolean onSearchRequested() {
+
+		Intent intent = new Intent(getApplicationContext(),
+				SearchActivity.class);
+		startActivity(intent);
+
+		return false;
 	}
 }

@@ -28,28 +28,8 @@ public class Note implements Serializable {
 
 	}
 
-	public String getAuthor() {
-		return mAuthor;
-	}
+	public void fetchAll() {
 
-	public String getBook() {
-		return mBook;
-	}
-
-	public String getUrl() {
-		return mUrl;
-	}
-
-	public void setUrl(String mUrl) {
-		this.mUrl = mUrl;
-	}
-
-	public String getContent() {
-		return mContent;
-	}
-
-	public void setContent(String mContent) {
-		this.mContent = mContent;
 	}
 
 	public void fetchIndex() {
@@ -73,11 +53,31 @@ public class Note implements Serializable {
 
 	}
 
-	public void fetchAll() {
+	public String getAuthor() {
+		return mAuthor;
+	}
 
+	public String getBook() {
+		return mBook;
+	}
+
+	public String getContent() {
+		return mContent;
 	}
 
 	public ArrayList<NoteSection> getSections() {
 		return this.mIndex.getSections();
+	}
+
+	public String getUrl() {
+		return mUrl;
+	}
+
+	public void setContent(String mContent) {
+		this.mContent = mContent;
+	}
+
+	public void setUrl(String mUrl) {
+		this.mUrl = mUrl;
 	}
 }

@@ -30,6 +30,10 @@ public class NoteSection implements Serializable {
 		mText = null;
 	}
 
+	public void addSubSection(NoteSection section) {
+		mSubSections.add(section);
+	}
+
 	public void fetch() {
 		if (mFetched) {
 			return;
@@ -54,43 +58,39 @@ public class NoteSection implements Serializable {
 		}
 	}
 
-	public int numSections() {
-		return mSubSections.size();
-	}
-
-	public void addSubSection(NoteSection section) {
-		mSubSections.add(section);
+	public String getName() {
+		return mName;
 	}
 
 	public Note getNote() {
 		return mNote;
 	}
 
-	public void setNote(Note note) {
-		mNote = note;
-	}
-
 	public ArrayList<NoteSection> getSubSections() {
 		return mSubSections;
+	}
+
+	public String getText() {
+		return mText;
 	}
 
 	public String getUrl() {
 		return mUrl;
 	}
 
-	public void setUrl(String url) {
-		mUrl = url;
-	}
-
-	public String getName() {
-		return mName;
+	public int numSections() {
+		return mSubSections.size();
 	}
 
 	public void setName(String name) {
 		mName = name;
 	}
 
-	public String getText() {
-		return mText;
+	public void setNote(Note note) {
+		mNote = note;
+	}
+
+	public void setUrl(String url) {
+		mUrl = url;
 	}
 }

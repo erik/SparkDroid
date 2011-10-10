@@ -10,16 +10,6 @@ public class NoteActivity extends Activity {
 
 	private NoteSection mSection;
 
-	@Override
-	public boolean onSearchRequested() {
-
-		Intent intent = new Intent(getApplicationContext(),
-				SearchActivity.class);
-		startActivity(intent);
-
-		return false;
-	}
-
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -38,5 +28,15 @@ public class NoteActivity extends Activity {
 		
 		TextView view = (TextView) findViewById(R.id.section_content);
 		view.setText(Html.fromHtml(mSection.getText()));
+	}
+
+	@Override
+	public boolean onSearchRequested() {
+
+		Intent intent = new Intent(getApplicationContext(),
+				SearchActivity.class);
+		startActivity(intent);
+
+		return false;
 	}
 }
