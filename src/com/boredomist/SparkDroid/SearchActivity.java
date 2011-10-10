@@ -79,20 +79,13 @@ public class SearchActivity extends Activity implements OnItemClickListener,
 		switch (item.getItemId()) {
 
 		case R.id.note_cached:
-			mDialog = ProgressDialog.show(SearchActivity.this, "", "Deleting",
-					true);
-			mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
 			new Thread() {
 				@Override
 				public void run() {
-
 					Note note = NotesCache.getInstance().getNote(pos);
 
 					note.unFetch();
 					handler.post(updateResults);
-
-					mDialog.dismiss();
 
 				}
 			}.start();
@@ -169,7 +162,8 @@ public class SearchActivity extends Activity implements OnItemClickListener,
 		if (cached < 1) {
 			menu.add(Menu.NONE, R.id.note_uncached, Menu.NONE,
 					"Save This Note For Later");
-		} else {
+		}
+		if (cached >= 0) {
 			menu.add(Menu.NONE, R.id.note_cached, Menu.NONE, "Delete This Note");
 		}
 
